@@ -22,7 +22,7 @@ CREATE TABLE users (
                        bio TEXT,
 
                        role VARCHAR(30) NOT NULL,
-    -- STUDENT, LEARNER, INSTITUTION, COMPANY
+    -- STUDENT, LEARNER, INSTITUTION, COMPANY , TEST
 
                        provider VARCHAR(20) DEFAULT 'LOCAL',
     -- LOCAL, GOOGLE, GITHUB, LINKEDIN
