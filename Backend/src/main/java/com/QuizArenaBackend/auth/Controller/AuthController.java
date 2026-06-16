@@ -8,6 +8,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -23,10 +25,13 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
+@Slf4j
+
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -34,53 +39,114 @@ public class AuthController {
     private final AppUserDetailsService appUserDetailsService;
     private final AuthService authService;
 
+
+
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-
-        try{
-            authenticate(loginRequest.getEmail() , loginRequest.getPassword());
-
-            final UserDetails userDetails = appUserDetailsService.loadUserByUsername(loginRequest.getEmail());
-
-            final String jwtToken = jwtUtil.generateToken(userDetails);
+    public ResponseEntity<?> login(
+            @RequestBody LoginRequest loginRequest) {
+        try {
 
 
-            ResponseCookie cookie = ResponseCookie.from("jwt",jwtToken)
+            authenticate(
+                    loginRequest.getEmail(),
+                    loginRequest.getPassword()
+            );
+
+
+            UserDetails userDetails =
+                    appUserDetailsService.loadUserByUsername(
+                            loginRequest.getEmail()
+                    );
+
+
+            String jwtToken =
+                    jwtUtil.generateToken(userDetails);
+
+            ResponseCookie cookie = ResponseCookie
+                    .from("jwt", jwtToken)
                     .httpOnly(true)
+                    .secure(false) // true in production HTTPS
                     .path("/")
                     .maxAge(Duration.ofDays(1))
                     .sameSite("Strict")
                     .build();
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,cookie.toString())
-                    .body(new LoginResponse("Account verification successfull...",loginRequest.getEmail(), jwtToken));
+            return ResponseEntity.ok()
+                    .header(
+                            HttpHeaders.SET_COOKIE,
+                            cookie.toString()
+                    )
+                    .body(
+                            new LoginResponse(
+                                    "Login successful",
+                                    loginRequest.getEmail(),
+                                    jwtToken
+                            )
+                    );
 
+        } catch (BadCredentialsException e) {
 
-        }catch (BadCredentialsException e){
-            Map<String , Object> error = new HashMap<>();
-            error.put("error",true);
-            error.put("message" , "Email or Password is incorrect");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            Map<String, Object> error =
+                    new HashMap<>();
 
-        }catch (DisabledException e){
-            Map<String , Object> error = new HashMap<>();
-            error.put("error",true);
-            error.put("message" , "Account is disabled");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+            error.put("error", true);
+            error.put(
+                    "message",
+                    "Email or Password is incorrect"
+            );
 
-        }catch (Exception e){
-            Map<String , Object> error = new HashMap<>();
-            error.put("error",true);
-            System.out.println(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error);
+
+        } catch (DisabledException e) {
+
+            Map<String, Object> error =
+                    new HashMap<>();
+
+            error.put("error", true);
+            error.put(
+                    "message",
+                    "Account is disabled"
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(error);
+
+        } catch (Exception e) {
+
             e.printStackTrace();
-            error.put("message" , "Authentication failed");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-        }
 
+            Map<String, Object> error =
+                    new HashMap<>();
+
+            error.put("error", true);
+            error.put(
+                    "message",
+                    "Authentication failed"
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(error);
+        }
     }
 
-    private void authenticate(String email , String password){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+    private void authenticate(
+            String email,
+            String password
+    ) {
+
+
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        email,
+                        password
+                )
+        );
     }
 
     @GetMapping("/me")

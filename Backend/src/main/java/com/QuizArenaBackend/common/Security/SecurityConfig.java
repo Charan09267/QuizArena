@@ -36,7 +36,7 @@ public class SecurityConfig {
 
     //custom authentication manager bean , with dao authentication...
     @Bean
-    public AuthenticationManager authenticationProvider(){
+    public AuthenticationManager authenticationManager(){
         DaoAuthenticationProvider daoauthenticationProvider= new DaoAuthenticationProvider(appUserDetailsService);
         daoauthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoauthenticationProvider);
@@ -65,7 +65,7 @@ public class SecurityConfig {
                 "Accept",
                 "Origin",
                 "X-Requested-With",
-                "Range"                 // Needed for video streaming
+                "Range"
         ));
 
         //  Headers browser can READ from response
@@ -73,7 +73,7 @@ public class SecurityConfig {
                 "Authorization",
                 "Content-Type",
                 "Content-Length",
-                "Content-Range",        //  Required for video/audio streaming
+                "Content-Range",
                 "Accept-Ranges"
         ));
 
@@ -93,7 +93,7 @@ public class SecurityConfig {
 
                 //authorization for http requests....
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/v1/auth/register").permitAll()
+                        .requestMatchers( "/api/v1/auth/*").permitAll()
                 )
 
                 //dealing with session management

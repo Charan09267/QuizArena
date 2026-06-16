@@ -5,8 +5,11 @@ import com.QuizArenaBackend.auth.DTO.RegisterResponse;
 import com.QuizArenaBackend.user.Entity.UserEntity;
 import com.QuizArenaBackend.user.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +17,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
 
     public RegisterResponse createProfile(
             RegisterRequest request
@@ -67,6 +71,7 @@ public class AuthService {
                 )
                 .username(request.getUserName())
                 .role(request.getRole())
+                .isVerified(Boolean.TRUE)
                 .build();
     }
 }

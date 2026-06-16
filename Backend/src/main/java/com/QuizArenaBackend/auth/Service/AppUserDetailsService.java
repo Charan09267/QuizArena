@@ -20,8 +20,19 @@ public class AppUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity existingUser = userRepository.findByEmail((username)).orElseThrow( ()->new UsernameNotFoundException("Email id is not found..try with existing email..") );
-        return new User(existingUser.getEmail(),existingUser.getPasswordHash(), List.of(new SimpleGrantedAuthority("ROLE_" + existingUser.getRole())));
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found"));
+
+        return org.springframework.security.core.userdetails.User
+                .builder()
+                .username(user.getEmail())
+                .password(user.getPasswordHash())
+                .roles(user.getRole())
+                .disabled(!user.getIsVerified())
+                .build();
     }
 }
