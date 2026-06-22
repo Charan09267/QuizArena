@@ -93,7 +93,8 @@ public class SecurityConfig {
 
                 //authorization for http requests....
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/v1/auth/*").permitAll()
+                        .requestMatchers( "/api/v1/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 //dealing with session management
