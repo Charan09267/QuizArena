@@ -1,4 +1,9 @@
 package com.QuizArenaBackend.contest.repository;
 
-public interface ContestRepository {
+import com.QuizArenaBackend.contest.entity.Contest;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ContestRepository extends JpaRepository<Contest, Long> {
+
+
 }

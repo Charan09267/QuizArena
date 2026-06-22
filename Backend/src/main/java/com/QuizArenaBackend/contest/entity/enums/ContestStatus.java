@@ -1,4 +1,4 @@
-package com.QuizArenaBackend.contest.entity;
+package com.QuizArenaBackend.contest.entity.enums;
 
 public enum ContestStatus {
 
