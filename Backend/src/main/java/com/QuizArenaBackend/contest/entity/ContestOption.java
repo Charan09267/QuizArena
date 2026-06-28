@@ -32,5 +32,4 @@ public class ContestOption {
 
     @Column(name = "is_correct", nullable = false)
     private Boolean isCorrect;
-
 }

@@ -11,6 +11,7 @@ public interface ContestOptionRepository
         extends JpaRepository<ContestOption, Long> {
 
     List<ContestOption> findByQuestionId(Long questionId);
+
     void deleteByQuestionId(Long questionId);
 
 

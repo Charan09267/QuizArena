@@ -2,7 +2,6 @@ package com.QuizArenaBackend.common.Security;
 
 import com.QuizArenaBackend.auth.Service.AppUserDetailsService;
 import com.QuizArenaBackend.common.Security.jwt.JwtAuthFilter;
-import com.QuizArenaBackend.common.Security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,31 +33,30 @@ public class SecurityConfig {
     private final AppUserDetailsService appUserDetailsService;
     private final JwtAuthFilter jwtFilter;
 
-    //custom authentication manager bean , with dao authentication...
     @Bean
-    public AuthenticationManager authenticationManager(){
-        DaoAuthenticationProvider daoauthenticationProvider= new DaoAuthenticationProvider(appUserDetailsService);
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider daoauthenticationProvider =
+                new DaoAuthenticationProvider(appUserDetailsService);
         daoauthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoauthenticationProvider);
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // custom cors filter configuration or else default is provided....
     @Bean
-    public CorsFilter corsFilter(){
+    public CorsFilter corsFilter() {
         return new CorsFilter(corsConfigurationSource());
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config =  new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","PATCH","OPTIONS"));
+        CorsConfiguration config = new CorsConfiguration();
 
-//  Allow common + multimedia headers
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+
         config.setAllowedHeaders(List.of(
                 "Authorization",
                 "Content-Type",
@@ -68,7 +66,6 @@ public class SecurityConfig {
                 "Range"
         ));
 
-        //  Headers browser can READ from response
         config.setExposedHeaders(List.of(
                 "Authorization",
                 "Content-Type",
@@ -79,22 +76,22 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
 
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",config);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
 
-                //authorization for http requests....
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers( "/api/v1/auth/**").permitAll()
-                        // Swagger
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        // Swagger (keep if you're using API docs)
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -103,25 +100,22 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
 
-                //dealing with session management
-                .sessionManagement( session ->
+                .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                //disabling the logout feature...
                 .logout(AbstractHttpConfigurer::disable)
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // add custom exception handling....
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint));
-
-
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(customAuthenticationEntryPoint)
+                );
 
         return http.build();
     }
-
 }

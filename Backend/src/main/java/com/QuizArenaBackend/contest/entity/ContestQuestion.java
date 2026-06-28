@@ -67,7 +67,5 @@ public class ContestQuestion {
             orphanRemoval = true
     )
     @Builder.Default
-    private List<ContestQuestionAttempt> attempts =
-            new ArrayList<>();
-
+    private List<ContestQuestionAttempt> attempts = new ArrayList<>();
 }

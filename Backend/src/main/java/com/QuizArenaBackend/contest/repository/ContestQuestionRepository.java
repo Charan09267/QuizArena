@@ -14,5 +14,4 @@ public interface ContestQuestionRepository
 
     long countByContestId(Long contestId);
 
-
 }

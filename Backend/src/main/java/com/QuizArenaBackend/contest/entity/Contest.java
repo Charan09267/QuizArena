@@ -76,5 +76,4 @@ public class Contest {
     )
     @Builder.Default
     private List<ContestParticipant> participants = new ArrayList<>();
-
 }
