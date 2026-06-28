@@ -1,9 +1,12 @@
 package com.QuizArenaBackend.user.Entity;
 
+import com.QuizArenaBackend.contest.entity.ContestParticipant;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -151,4 +154,5 @@ public class UserEntity {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 }

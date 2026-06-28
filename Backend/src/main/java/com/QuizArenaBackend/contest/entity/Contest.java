@@ -10,6 +10,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "contests")
@@ -58,5 +60,21 @@ public class Contest {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+            mappedBy = "contest",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<ContestQuestion> questions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "contest",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<ContestParticipant> participants = new ArrayList<>();
 
 }

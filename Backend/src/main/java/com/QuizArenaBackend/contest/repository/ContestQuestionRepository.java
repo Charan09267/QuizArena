@@ -12,4 +12,7 @@ public interface ContestQuestionRepository
 
     List<ContestQuestion> findByContestIdOrderByOrderIndex(Long contestId);
 
+    long countByContestId(Long contestId);
+
+
 }

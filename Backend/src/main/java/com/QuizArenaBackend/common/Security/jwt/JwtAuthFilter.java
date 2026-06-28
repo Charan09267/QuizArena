@@ -38,6 +38,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
+        String path1 = request.getServletPath();
+
+        if (path1.startsWith("/swagger-ui")
+                || path1.startsWith("/v3/api-docs")
+                || path1.startsWith("/swagger-resources")
+                || path1.startsWith("/webjars")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String jwt = null;
         String email = null;
 

@@ -1,4 +1,4 @@
-package com.QuizArenaBackend.contest.service;
+package com.QuizArenaBackend.contest.service.interfaces;
 
 import com.QuizArenaBackend.contest.dto.CreateQuestionRequest;
 import com.QuizArenaBackend.contest.dto.QuestionResponse;
