@@ -6,6 +6,7 @@ import com.QuizArenaBackend.contest.dto.CreateContestRequest;
 import com.QuizArenaBackend.contest.dto.LeaderboardResponse;
 import com.QuizArenaBackend.contest.dto.UpdateContestRequest;
 import com.QuizArenaBackend.contest.service.interfaces.ContestService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ContestController {
 
     @PostMapping
     public ResponseEntity<ContestResponse> createContest(
-            @RequestBody CreateContestRequest request) {
+            @Valid @RequestBody CreateContestRequest request) {
 
         return ResponseEntity.ok(
                 contestService.createContest(request)
@@ -51,7 +52,7 @@ public class ContestController {
     @PutMapping("/{id}")
     public ResponseEntity<ContestResponse> updateContest(
             @PathVariable Long id,
-            @RequestBody UpdateContestRequest request) {
+            @Valid @RequestBody UpdateContestRequest request) {
 
         return ResponseEntity.ok(
                 contestService.updateContest(id, request)
