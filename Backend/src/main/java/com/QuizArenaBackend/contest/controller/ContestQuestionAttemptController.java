@@ -3,6 +3,7 @@ package com.QuizArenaBackend.contest.controller;
 import com.QuizArenaBackend.contest.dto.QuestionAttemptResponse;
 import com.QuizArenaBackend.contest.dto.SaveAnswerRequest;
 import com.QuizArenaBackend.contest.service.interfaces.ContestQuestionAttemptService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ContestQuestionAttemptController {
     public ResponseEntity<QuestionAttemptResponse> saveAnswer(
             @PathVariable Long attemptId,
             @PathVariable Long questionId,
-            @RequestBody SaveAnswerRequest request) {
+            @Valid  @RequestBody SaveAnswerRequest request) {
 
         return ResponseEntity.ok(
                 service.saveAnswer(

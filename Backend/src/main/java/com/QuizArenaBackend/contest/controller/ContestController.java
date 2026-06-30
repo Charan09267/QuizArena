@@ -1,12 +1,11 @@
 package com.QuizArenaBackend.contest.controller;
 
+import com.QuizArenaBackend.contest.Exception.ResourceNotFoundException;
 import com.QuizArenaBackend.contest.dto.ContestResponse;
 import com.QuizArenaBackend.contest.dto.CreateContestRequest;
-import com.QuizArenaBackend.contest.dto.UpdateContestRequest;
 import com.QuizArenaBackend.contest.dto.LeaderboardResponse;
+import com.QuizArenaBackend.contest.dto.UpdateContestRequest;
 import com.QuizArenaBackend.contest.service.interfaces.ContestService;
-import com.QuizArenaBackend.contest.Exception.ResourceNotFoundException;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +31,11 @@ public class ContestController {
     @GetMapping("/{id}")
     public ResponseEntity<ContestResponse> getContest(
             @PathVariable Long id) {
-
         try {
             return ResponseEntity.ok(
                     contestService.getContestById(id)
             );
-        } catch (ResourceNotFoundException ex) {
+        }catch (ResourceNotFoundException ex){
             return ResponseEntity.notFound().build();
         }
     }
@@ -78,6 +76,7 @@ public class ContestController {
         );
     }
 
+
     @PostMapping("/{contestId}/cancel")
     public ResponseEntity<ContestResponse> cancelContest(
             @PathVariable Long contestId) {
@@ -88,11 +87,14 @@ public class ContestController {
     }
 
     @GetMapping("/{contestId}/leaderboard")
-    public ResponseEntity<List<LeaderboardResponse>> getLeaderboard(
-            @PathVariable Long contestId) {
+    public ResponseEntity<List<LeaderboardResponse>>
+    getLeaderboard(
+            @PathVariable Long contestId){
 
         return ResponseEntity.ok(
-                contestService.getLeaderboard(contestId)
-        );
+                contestService.getLeaderboard(
+                        contestId));
     }
+
+
 }
